@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+    
+    function isValidPanel(panel) {
+       return panel is map 
+         && panel.keys().hasAll(["age", "tb", "db", "alt", "ast", "alp", "tp", "alb", "ag", "sex"])
+         && panel.keys().size() == 10
+         && (panel.age is number || panel.age == null)
+         && (panel.tb is number || panel.tb == null)
+         && (panel.db is number || panel.db == null)
+         && (panel.alt is number || panel.alt == null)
+         && (panel.ast is number || panel.ast == null)
+         && (panel.alp is number || panel.alp == null)
+         && (panel.tp is number || panel.tp == null)
+         && (panel.alb is number || panel.alb == null)
+         && (panel.ag is number || panel.ag == null)
+         && panel.sex is string && panel.sex.size() <= 32;
+    }
+
+    function isValidHistoryEntry(data) {
+      return data is map
+        && data.keys().hasAll(["userId", "timestamp", "name", "sex", "resultP", "panel", "saved"])
+        && data.userId is string && data.userId.size() <= 128 && data.userId == request.auth.uid
+        && data.timestamp is number
+        && data.name is string && data.name.size() <= 256
+        && data.sex is string && data.sex.size() <= 32
+        && data.resultP is number
+        && isValidPanel(data.panel)
+        && data.saved is bool
+        && (!("diagnosis" in data) || (data.diagnosis is string && data.diagnosis.size() <= 1024) || data.diagnosis == null)
+        && (!("reasoning" in data) || (data.reasoning is string && data.reasoning.size() <= 4096) || data.reasoning == null);
+    }
+
+    match /users/{userId}/history/{historyId} {
+      allow read: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+      
+      allow create: if isSignedIn() 
+        && isValidId(userId) 
+        && request.auth.uid == userId 
+        && isValidHistoryEntry(incoming()) 
+        && incoming().userId == userId;
+        
+      allow update: if isSignedIn() 
+        && isValidId(userId) 
+        && request.auth.uid == userId 
+        && isValidHistoryEntry(incoming())
+        && incoming().userId == existing().userId
+        && incoming().timestamp == existing().timestamp
+        && incoming().diff(existing()).affectedKeys().hasOnly(['saved']);
+        
+      allow delete: if isSignedIn() && isValidId(userId) && request.auth.uid == userId;
+    }
+  }
+}

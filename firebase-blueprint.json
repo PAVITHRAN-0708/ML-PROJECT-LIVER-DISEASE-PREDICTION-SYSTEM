@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "history_entry": {
+      "title": "HistoryEntry",
+      "description": "A single analysis result history record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "number" },
+        "name": { "type": "string", "maxLength": 256 },
+        "sex": { "type": "string", "maxLength": 32 },
+        "resultP": { "type": "number" },
+        "panel": { "$ref": "#/entities/panel" },
+        "saved": { "type": "boolean" },
+        "diagnosis": { "type": "string", "maxLength": 1024 },
+        "reasoning": { "type": "string", "maxLength": 4096 }
+      },
+      "required": ["userId", "timestamp", "name", "sex", "resultP", "panel", "saved"]
+    },
+    "panel": {
+      "title": "Panel",
+      "description": "The lab test panel",
+      "type": "object",
+      "properties": {
+        "age": { "type": "number" },
+        "tb": { "type": "number" },
+        "db": { "type": "number" },
+        "alt": { "type": "number" },
+        "ast": { "type": "number" },
+        "alp": { "type": "number" },
+        "tp": { "type": "number" },
+        "alb": { "type": "number" },
+        "ag": { "type": "number" },
+        "sex": { "type": "string", "maxLength": 32 }
+      },
+      "required": ["age", "tb", "db", "alt", "ast", "alp", "tp", "alb", "ag", "sex"]
+    }
+  },
+  "firestore": {
+    "users/{userId}/history/{historyId}": {
+      "schema": { "$ref": "#/entities/history_entry" },
+      "description": "Stores user history entries"
+    }
+  }
+}

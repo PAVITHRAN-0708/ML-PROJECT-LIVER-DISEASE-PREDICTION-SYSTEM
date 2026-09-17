@@ -1,0 +1,12 @@
+{
+  "projectId": "manifest-rhino-hcbh2",
+  "appId": "1:823982531250:web:9069420842ea6a0bc39fab",
+  "apiKey": "AIzaSyBnevRBsapfXt3x6qazcCy2cqkp2C59_jw",
+  "authDomain": "manifest-rhino-hcbh2.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-liverdiseasepred-d24db40c-8bd3-4535-baa0-76f983f2f4d2",
+  "storageBucket": "manifest-rhino-hcbh2.firebasestorage.app",
+  "messagingSenderId": "823982531250",
+  "measurementId": "",
+  "oAuthClientId": "823982531250-d5j5iru486l6scn2b2vrqr49diipvvnh.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
+}

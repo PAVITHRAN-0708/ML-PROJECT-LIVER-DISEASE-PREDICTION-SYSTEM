@@ -1,0 +1,11 @@
+{
+  "name": "Liver Disease Prediction System",
+  "description": "A diagnostic web application utilizing machine learning for liver disease prediction based on patient metrics and uploaded test reports.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
